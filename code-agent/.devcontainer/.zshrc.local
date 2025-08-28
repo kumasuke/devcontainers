@@ -1,0 +1,21 @@
+# このファイルは Dev Container 起動時に /home/vscode/.zshrc.local としてマウントされます。
+# エイリアスや関数、環境変数のローカルカスタマイズをここに記述してください。
+
+# 例: よく使う ls エイリアス
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# 例: Git のショートカット
+alias gst='git status'
+alias gl='git log --oneline --graph --decorate'
+
+# 例: デフォルトエディタ
+export EDITOR=vim
+
+# ここに任意の設定を追加
+
+# yolo
+alias claude-yolo='claude --dangerously-skip-permissions'
+alias codex-yolo='codex --dangerously-bypass-approvals-and-sandbox'
+alias gemini-yolo='gemini --yolo'
