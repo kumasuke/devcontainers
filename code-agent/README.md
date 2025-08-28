@@ -6,13 +6,14 @@
 - ベース: Ubuntu 22.04（`ARG VARIANT`）
 - シェル: zsh（`/usr/bin/zsh`）
 - Homebrew (Linuxbrew): 非対話インストール + PATH 設定
-- oh‑my‑zsh + powerlevel10k: 非対話インストール、テーマ反映済み
+- oh‑my‑zsh + powerlevel10k: 非対話インストール（RUNZSH=no, CHSH=no, KEEP_ZSHRC=yes）、テーマ反映済み
 - direnv: apt インストール + zsh フック設定済み（apt 優先）
 - gh (GitHub CLI): 公式 APT リポジトリからインストール（apt 優先）
-- Codex: GitHub リリースからバイナリ取得（x86_64/arm64 自動判定）
+- gnupg: gh の APT リポジトリ鍵導入に必要（apt 導入済み）
+- Codex: GitHub リリースからバイナリ取得（x86_64/arm64 自動判定、失敗時は brew、双方失敗でもビルド継続）
 - Claude (Claude Code): ネイティブバイナリ（公式 install.sh）
-- Node.js: nvm で 22.18.0 をインストールし default に設定
-- npm グローバル: ユーザー配下（`~/.npm-global`）に変更し権限問題を回避
+- Node.js: nvm で 22.18.0 をインストールし default に設定。`PATH` に `~/.nvm/versions/node/v${NODE_VERSION}/bin` を追加し、zsh 起動時に `nvm use default` を実行するため、非ログイン/ログインの両方で `node`/`npm`/`npx` が利用可能です。
+- npm グローバル: nvm 互換性のため `~/.npmrc` での `prefix` 設定は行わず、nvm が管理する Node ごとのグローバルパスを使用（`~/.nvm/versions/node/v22.18.0/bin` が PATH に含まれる）
 - Bun: バージョン固定（bun-v1.2.21）
 - gemini-cli: npm グローバルで v0.2.1 固定（変数管理: `GEMINI_CLI_VERSION`）
 - タイムゾーン: Asia/Tokyo
@@ -85,21 +86,24 @@
 ## 実装メモ（主な設定）
 - パッケージ導入方針: インストール可能なものは apt を優先（例: direnv, gh）。それ以外は公式スクリプト/バイナリ、Homebrew を併用。
 - PATH: `~/.local/bin`, `~/.npm-global/bin`, `~/.bun/bin`, Linuxbrew `bin` を追加
-- npm グローバル: `~/.npm-global` に固定（`NPM_CONFIG_PREFIX` と `~/.npmrc`）
+- npm グローバル: `~/.npmrc` の `prefix` 固定は廃止（nvm と非互換のため）。`npm -g` は有効な Node（nvm default）配下にインストールされ、当該 bin が PATH に入ります。
 - nvm: `~/.nvm` に配置し、zsh 起動時に自動読み込み
 - Codex: 
   - 取得 URL 例: `https://github.com/openai/codex/releases/download/rust-v0.25.0/codex-x86_64-unknown-linux-musl.tar.gz`
   - 展開後の実行ファイルを `~/.local/bin/codex` に配置
-  - 失敗時は `brew install codex && brew pin codex` にフォールバック
+  - 失敗時は `brew install codex && brew pin codex` にフォールバック。両方失敗してもビルドは継続します（`codex` は任意）。
 - Claude: `curl -fsSL https://claude.ai/install.sh | bash -s 1.0.94`
 - gh: 公式 APT リポジトリを登録し `apt-get install gh`
 - Bun: `curl -fsSL https://bun.com/install | bash -s "bun-v1.2.21"`
+  
+  補足: gh の APT リポジトリ鍵（`.gpg`）を `curl | gpg --dearmor` で登録するため、`gnupg` を apt で導入しています。
 
 ## トラブルシュート
 - powerlevel10k のアイコンが崩れる: ローカル VS Code のフォントを Nerd Font（MesloLGS NF）へ切り替え。
 - `codex` が見つからない: GitHub へのアクセスやアーキ判定を確認。失敗時は brew のフォールバックが働きます。
+  - それでも取得できない場合はスキップされます（ビルドは成功）。必要になった時点で手動導入を検討してください。
 - `gemini`/`claude` が認証エラー: 各 CLI のドキュメントに従い API キーやログインを設定。`.envrc` + direnv 管理が便利です。
-- npm 権限エラー: グローバル prefix を `~/.npm-global` に固定済み。`echo $NPM_CONFIG_PREFIX` を確認。
+- npm 権限/互換: `~/.npmrc` に `prefix` を書かない。`npm prefix -g` で現在のグローバル先を確認。`nvm use --delete-prefix` 警告が出る場合は `.npmrc` から `prefix` 行を削除。
 
 ---
 不明点や追加したいツール/バージョンがあればお知らせください。必要に応じて `.devcontainer` を更新します。

@@ -9,7 +9,7 @@
       "CLAUDE_VERSION": "1.0.94",
       "CODEX_VERSION": "0.25.0",
       "NODE_VERSION": "22.18.0",
-      "GEMINI_CLI_VERSION": "v0.2.1",
+      "GEMINI_CLI_VERSION": "0.2.1",
       "BUN_VERSION": "bun-v1.2.21",
       "TIMEZONE": "Asia/Tokyo"
     }
@@ -42,6 +42,7 @@
     }
   },
   "containerEnv": {
+    "POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD": "true",
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
   }
 }
