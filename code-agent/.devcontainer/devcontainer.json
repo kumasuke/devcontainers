@@ -1,0 +1,47 @@
+{
+  "name": "Ubuntu + Homebrew",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "22.04",
+      "USERNAME": "vscode",
+      "BREW_PACKAGES": "",
+      "CLAUDE_VERSION": "1.0.94",
+      "CODEX_VERSION": "0.25.0",
+      "NODE_VERSION": "22.18.0",
+      "GEMINI_CLI_VERSION": "v0.2.1",
+      "BUN_VERSION": "bun-v1.2.21",
+      "TIMEZONE": "Asia/Tokyo"
+    }
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
+  "remoteUser": "vscode",
+  "remoteEnv": { "SHELL": "/usr/bin/zsh", "TZ": "Asia/Tokyo" },
+  "mounts": [
+    "source=${localWorkspaceFolder}/.devcontainer/.zshrc.local,target=/home/vscode/.zshrc.local,type=bind,consistency=cached"
+  ],
+  "updateRemoteUserUID": true,
+  "features": {},
+  "postCreateCommand": "brew --version || true; gh --version || true; claude --version || true; codex --version || true; node -v || true; npm -v || true; bun --version || true; gemini --version || true",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/usr/bin/zsh"
+          }
+        },
+        "terminal.integrated.fontFamily": "MesloLGS NF"
+      },
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "mkhl.direnv"
+      ]
+    }
+  },
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  }
+}
