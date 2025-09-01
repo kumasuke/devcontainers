@@ -11,6 +11,7 @@
       "NODE_VERSION": "22.18.0",
       "GEMINI_CLI_VERSION": "0.2.1",
       "BUN_VERSION": "bun-v1.2.21",
+      "UV_VERSION": "0.8.14",
       "TIMEZONE": "Asia/Tokyo"
     }
   },
@@ -23,7 +24,7 @@
   ],
   "updateRemoteUserUID": true,
   "features": {},
-  "postCreateCommand": "brew --version || true; gh --version || true; claude --version || true; codex --version || true; node -v || true; npm -v || true; bun --version || true; gemini --version || true",
+  "postCreateCommand": "brew --version || true; gh --version || true; claude --version || true; codex --version || true; node -v || true; npm -v || true; bun --version || true; gemini --version || true; uv --version || true",
   "customizations": {
     "vscode": {
       "settings": {

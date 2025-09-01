@@ -13,6 +13,7 @@ ARG CODEX_VERSION="0.25.0"
 ARG NODE_VERSION="22.18.0"
 ARG BUN_VERSION="bun-v1.2.21"
 ARG GEMINI_CLI_VERSION="v0.2.1"
+ARG UV_VERSION="0.8.14"
 
 # 基本パッケージとユーザー作成
 RUN apt-get update \
@@ -127,6 +128,11 @@ RUN set -eux \
 RUN set -eux \
     && su - ${USERNAME} -c 'curl -fsSL https://bun.com/install | bash -s '"${BUN_VERSION}"'' \
     && su - ${USERNAME} -c '$HOME/.bun/bin/bun --version || true'
+
+# uv を公式インストールスクリプトでバージョン固定インストール（~/.local/bin）
+RUN set -eux \
+    && su - ${USERNAME} -c 'curl -LsSf https://astral.sh/uv/'"${UV_VERSION}"'/install.sh | sh' \
+    && su - ${USERNAME} -c '$HOME/.local/bin/uv --version || true'
 
 # npm のグローバル設定（nvm 互換のため ~/.npmrc の prefix を削除）
 RUN set -eux \
