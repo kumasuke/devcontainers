@@ -14,6 +14,8 @@ ARG NODE_VERSION="22.18.0"
 ARG BUN_VERSION="bun-v1.2.21"
 ARG GEMINI_CLI_VERSION="v0.2.1"
 ARG UV_VERSION="0.8.14"
+ARG SERENA_REPO="https://github.com/oraios/serena"
+ARG SERENA_TAG="v0.1.4"
 
 # 基本パッケージとユーザー作成
 RUN apt-get update \
@@ -133,6 +135,38 @@ RUN set -eux \
 RUN set -eux \
     && su - ${USERNAME} -c 'curl -LsSf https://astral.sh/uv/'"${UV_VERSION}"'/install.sh | sh' \
     && su - ${USERNAME} -c '$HOME/.local/bin/uv --version || true'
+
+# Serena リポジトリを取得（タグ固定）し、起動用ラッパーを配置
+RUN set -eux \
+    && su - ${USERNAME} -c " \
+      set -euo pipefail; \
+      DEST=\"\$HOME/serena\"; \
+      if [ ! -d \"\$DEST/.git\" ]; then \
+        echo \"Cloning Serena (tag ${SERENA_TAG}) from ${SERENA_REPO}\"; \
+        if git clone --depth 1 --branch \"${SERENA_TAG}\" \"${SERENA_REPO}\" \"\$DEST\" 2>/dev/null; then \
+          :; \
+        else \
+          git clone \"${SERENA_REPO}\" \"\$DEST\"; \
+          cd \"\$DEST\"; \
+          git checkout \"${SERENA_TAG}\"; \
+        fi; \
+      fi; \
+      mkdir -p \"\$HOME/.local/bin\"; \
+      # mcp サーバ起動用ラッパー（printfで生成）
+      printf '%s\\n' \
+         '#!/usr/bin/env bash' \
+         'set -euo pipefail' \
+         'exec "\$HOME/.local/bin/uv" run --directory "\$HOME/serena" serena start-mcp-server "\$@"' \
+         > \"\$HOME/.local/bin/serena-mcp-server\" \
+      && chmod +x \"\$HOME/.local/bin/serena-mcp-server\" \
+      # 設定編集用ラッパー
+      && printf '%s\\n' \
+         '#!/usr/bin/env bash' \
+         'set -euo pipefail' \
+         'exec "\$HOME/.local/bin/uv" run --directory "\$HOME/serena" serena config edit "\$@"' \
+         > \"\$HOME/.local/bin/serena-config-edit\" \
+      && chmod +x \"\$HOME/.local/bin/serena-config-edit\" \
+      && true"
 
 # npm のグローバル設定（nvm 互換のため ~/.npmrc の prefix を削除）
 RUN set -eux \
