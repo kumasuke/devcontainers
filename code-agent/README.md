@@ -2,6 +2,14 @@
 
 このリポジトリには、Ubuntu ベースの Dev Container 環境が用意されています。Homebrew、zsh、oh‑my‑zsh、powerlevel10k、direnv、Claude(CLI)、OpenAI Codex、Node.js(nvm)、npm グローバル、Bun、gemini-cli、uv、Serena(MCP) をインストール/準備し、日本(Asia/Tokyo)のタイムゾーンで動作します。
 
+## はじめに
+以下を実行して、Agent設定ファイルのシムリンクを作成すること
+
+```bash
+cd .devcontainer/agent-config
+./create-symlink-configs.sh
+```
+
 ## 構成
 - ベース: Ubuntu 22.04（`ARG VARIANT`）
 - シェル: zsh（`/usr/bin/zsh`）
