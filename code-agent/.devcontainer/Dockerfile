@@ -245,3 +245,6 @@ WORKDIR /workspace
 # pnpm のグローバル設定
 # 新規に公開されたバージョンのインストールを遅延
 RUN pnpm config set --location=global minimumReleaseAge 1440 # 1 day
+
+# Aikido Safe Chain のインストール
+RUN npm install -g @aikidosec/safe-chain@latest && safe-chain setup
