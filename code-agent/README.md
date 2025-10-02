@@ -1,6 +1,6 @@
 # 開発コンテナ (.devcontainer) セットアップ概要
 
-このリポジトリには、Ubuntu ベースの Dev Container 環境が用意されています。Homebrew、zsh、oh‑my‑zsh、powerlevel10k、direnv、Claude(CLI)、OpenAI Codex、Node.js(nvm)、npm グローバル、Bun、gemini-cli などをインストールし、日本(Asia/Tokyo)のタイムゾーンで動作します。
+このリポジトリには、Ubuntu ベースの Dev Container 環境が用意されています。Homebrew、zsh、oh‑my‑zsh、powerlevel10k、direnv、Claude(CLI)、OpenAI Codex、Node.js(nvm)、npm グローバル、Bun、gemini-cli、uv、Serena(MCP) をインストール/準備し、日本(Asia/Tokyo)のタイムゾーンで動作します。
 
 ## 構成
 - ベース: Ubuntu 22.04（`ARG VARIANT`）
@@ -16,6 +16,8 @@
 - npm グローバル: nvm 互換性のため `~/.npmrc` での `prefix` 設定は行わず、nvm が管理する Node ごとのグローバルパスを使用（`~/.nvm/versions/node/v22.18.0/bin` が PATH に含まれる）
 - Bun: バージョン固定（bun-v1.2.21）
 - gemini-cli: npm グローバルで v0.2.1 固定（変数管理: `GEMINI_CLI_VERSION`）
+- uv: 公式スクリプトで 0.8.14 固定（変数管理: `UV_VERSION`）
+- Serena (MCP): リポジトリをクローンし、`serena-mcp-server` / `serena-config-edit` ラッパーを配置（変数管理: `SERENA_REPO`, `SERENA_TAG`）。既定はタグ固定（`v0.1.4`）。
 - タイムゾーン: Asia/Tokyo
 - VS Code: 統合ターミナルを zsh 既定、フォントは MesloLGS NF を推奨
 - ワークスペース: コンテナ内の `/workspace` を作業ディレクトリに設定（ローカルをバインドマウント）
@@ -26,6 +28,8 @@
 - Node.js: 22.18.0（nvm）
 - Bun: bun-v1.2.21（インストーラにバージョン指定）
 - gemini-cli: v0.2.1（npm グローバル）
+- uv: 0.8.14（公式 install.sh）
+- Serena: `SERENA_REPO` と `SERENA_TAG` で参照を管理。既定は `v0.1.4` に固定。
 
 ## 主要ファイル
 - `.devcontainer/Dockerfile`
@@ -44,6 +48,16 @@
    - `node -v`, `npm -v`
    - `bun --version`
    - `gemini --version`
+   - `uv --version`
+   - `serena-mcp-server`（PATH 上に存在確認）
+
+### Serena (MCP) の使い方
+- リポジトリ配置: コンテナ内 `~/serena`
+- サーバ起動: `serena-mcp-server`
+- 設定編集: `serena-config-edit`
+- 直接 uv で実行する場合:
+  - `uv run --directory ~/serena serena start-mcp-server`
+  - `uv run --directory ~/serena serena config edit`
 
 ### ローカル zsh 設定のマウント（エイリアス等）
 - ローカルの `.devcontainer/.zshrc.local` は、コンテナ内の `/home/vscode/.zshrc.local` にバインドマウントされます。
@@ -80,6 +94,9 @@
 - `NODE_VERSION`: 例 `22.18.0`
 - `BUN_VERSION`: 例 `bun-v1.2.21`
 - `GEMINI_CLI_VERSION`: 例 `v0.2.1`
+- `UV_VERSION`: 例 `0.8.14`
+- `SERENA_REPO`: 例 `https://github.com/oraios/serena`
+- `SERENA_TAG`: 例 `v0.1.4`
 
 変更後は Dev Container を Rebuild してください。
 
@@ -93,6 +110,7 @@
   - 展開後の実行ファイルを `~/.local/bin/codex` に配置
   - 失敗時は `brew install codex && brew pin codex` にフォールバック。両方失敗してもビルドは継続します（`codex` は任意）。
 - Claude: `curl -fsSL https://claude.ai/install.sh | bash -s 1.0.94`
+- uv: `curl -LsSf https://astral.sh/uv/0.8.14/install.sh | sh`（バージョンは `UV_VERSION` で固定）
 - gh: 公式 APT リポジトリを登録し `apt-get install gh`
 - Bun: `curl -fsSL https://bun.com/install | bash -s "bun-v1.2.21"`
   
