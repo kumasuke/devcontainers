@@ -26,6 +26,9 @@
     "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
     "source=codex-code-config-${devcontainerId},target=/home/vscode/.codex,type=volume",
     "source=gemini-code-config-${devcontainerId},target=/home/vscode/.gemini,type=volume",
+    "source=${localWorkspaceFolder}/.devcontainer/agent-config/AGENTS.md,target=/home/vscode/.codex/AGENTS.md,type=bind,consistency=cached",
+    "source=${localWorkspaceFolder}/.devcontainer/agent-config/CLAUDE.md,target=/home/vscode/.claude/CLAUDE.md,type=bind,consistency=cached",
+    "source=${localWorkspaceFolder}/.devcontainer/agent-config/GEMINI.md,target=/home/vscode/.gemini/GEMINI.md,type=bind,consistency=cached",
     "source=${localWorkspaceFolder}/.devcontainer/.zshrc.local,target=/home/vscode/.zshrc.local,type=bind,consistency=cached"
   ],
   "updateRemoteUserUID": true,
