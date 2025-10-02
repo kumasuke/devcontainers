@@ -46,6 +46,16 @@ RUN apt-get update \
     && usermod -aG sudo ${USERNAME} \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-${USERNAME}
 
+# Persist bash history.
+RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
+  && mkdir /commandhistory \
+  && touch /commandhistory/.bash_history \
+  && chown -R $USERNAME /commandhistory
+
+# Create workspace and config directories and set permissions
+RUN mkdir -p /workspace /home/${USERNAME}/.claude /home/${USERNAME}/.codex /home/${USERNAME}/.gemini && \
+  chown -R ${USERNAME}:${USERNAME} /workspace /home/${USERNAME}/.claude /home/${USERNAME}/.codex /home/${USERNAME}/.gemini
+
 # GitHub CLI (gh) を APT リポジトリから導入（apt 優先方針）
 RUN set -eux \
     && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
