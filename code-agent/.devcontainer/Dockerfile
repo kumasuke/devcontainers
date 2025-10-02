@@ -241,3 +241,7 @@ RUN set -eux \
 
 USER ${USERNAME}
 WORKDIR /workspace
+
+# pnpm のグローバル設定
+# 新規に公開されたバージョンのインストールを遅延
+RUN pnpm config set --location=global minimumReleaseAge 1440 # 1 day
