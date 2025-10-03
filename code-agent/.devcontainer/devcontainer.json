@@ -17,10 +17,15 @@
       "TIMEZONE": "Asia/Tokyo"
     }
   },
+  "forwardPorts": [],
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "remoteUser": "vscode",
   "remoteEnv": { "SHELL": "/usr/bin/zsh", "TZ": "Asia/Tokyo" },
+  "runArgs": [
+    "--init",
+    "--add-host=host.docker.internal:host-gateway"
+  ],
   "mounts": [
     "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
     "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
